@@ -6,7 +6,7 @@ import UnlockPage from "./pages/UnlockPage";
 import AppsPage from "./pages/AppsPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminDashboard from "./admin/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
 import NotFound from "./pages/NotFoundPage";
 import AppPreview from "./pages/AppPreview";
