@@ -8,7 +8,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import AdminDashboard from "./admin/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
-import NotFound from "./pages/NotFoundPage";
+import NotFound from "./pages/NotFound";
 import AppPreview from "./pages/AppPreview";
 import ViewCodes from "./admin/ViewCodes";
 import AddCode from "./admin/AddCode";
