@@ -7,17 +7,17 @@ import AppsPage from "./pages/AppsPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import AdminDashboard from "./admin/AdminDashboard";
-import UserDashboard from "./pages/UserDashboard";
-import NotFound from "./pages/NotFoundPage";
-import AppPreview from "./pages/AppPreview";
-import ViewCodes from "./admin/ViewCodes";
 import AddCode from "./admin/AddCode";
+import ViewCodes from "./admin/ViewCodes";
 import ViewApps from "./admin/ViewApps";
-import Header from "./components/Header";
+import UserDashboard from "./pages/UserDashboard";
+import AppPreview from "./pages/AppPreview";
+import NotFoundPage from "./pages/NotFoundPage";
 import AdminRoute from "./routes/AdminRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import Header from "./components/Header";
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Header />
@@ -27,14 +27,8 @@ function App() {
         <Route path="/apps" element={<AppsPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route
-          path="/admin"
-          element={
-            <AdminRoute>
-              <AdminDashboard />
-            </AdminRoute>
-          }
-        />
+
+        {/* Protected user dashboard */}
         <Route
           path="/dashboard"
           element={
@@ -43,11 +37,13 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* Protected admin routes */}
         <Route
-          path="/admin/view-codes"
+          path="/admin"
           element={
             <AdminRoute>
-              <ViewCodes />
+              <AdminDashboard />
             </AdminRoute>
           }
         />
@@ -60,6 +56,14 @@ function App() {
           }
         />
         <Route
+          path="/admin/view-codes"
+          element={
+            <AdminRoute>
+              <ViewCodes />
+            </AdminRoute>
+          }
+        />
+        <Route
           path="/admin/view-apps"
           element={
             <AdminRoute>
@@ -67,11 +71,15 @@ function App() {
             </AdminRoute>
           }
         />
+
+        {/* App preview page */}
         <Route path="/preview/:id" element={<AppPreview />} />
-        <Route path="*" element={<NotFound />} />
+
+        {/* 404 Fallback */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;
