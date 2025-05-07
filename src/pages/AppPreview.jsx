@@ -1,46 +1,59 @@
-import React from "react";
-import { useLocation, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { useParams, useNavigate } from "react-router-dom";
 
-function AppPreview() {
-  const location = useLocation();
-  const { app } = location.state || {};
+const AppPreview = () => {
+  const { id } = useParams(); // appId
+  const navigate = useNavigate();
+  const [app, setApp] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!app) {
-    return (
-      <div className="p-10 text-center text-red-600">
-        ❌ لم يتم تحديد التطبيق. الرجاء العودة إلى <Link to="/" className="underline text-indigo-600">الصفحة الرئيسية</Link>.
-      </div>
-    );
-  }
+  useEffect(() => {
+    const fetchApp = async () => {
+      try {
+        const docRef = doc(db, "apps", id);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setApp(docSnap.data());
+        } else {
+          navigate("/");
+        }
+      } catch (err) {
+        console.error("حدث خطأ في جلب التطبيق:", err);
+        navigate("/");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchApp();
+  }, [id, navigate]);
+
+  if (loading) return <p className="text-white p-4">جاري تحميل تفاصيل التطبيق...</p>;
+  if (!app) return null;
 
   return (
-    <div dir="rtl" className="min-h-screen bg-white px-6 py-10 text-right">
-      <div className="max-w-xl mx-auto text-center">
-        <img
-          src={app.image}
-          alt={app.name}
-          className="w-24 h-24 mx-auto mb-4 rounded shadow"
-        />
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">{app.name}</h1>
-        <p className="text-gray-600 mb-4">{app.description}</p>
-
-        <ul className="text-gray-700 text-sm mb-6">
-          <li>✔️ حفظ القصص</li>
-          <li>✔️ مشاهدة بدون علم</li>
-          <li>✔️ تحميل الصور والفيديوهات</li>
-          {/* you can make this dynamic per app later */}
-        </ul>
-
-        <Link
-          to="/unlock"
-          state={{ app }}
-          className="inline-block bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700"
+    <div dir="rtl" className="min-h-screen bg-black text-white p-4 flex flex-col items-center">
+      <div className="max-w-lg w-full bg-gray-900 p-6 rounded-lg shadow-lg">
+        <h2 className="text-3xl font-bold text-purple-400 mb-2">
+          {app.appName}
+        </h2>
+        <p className="text-sm mb-3 text-gray-300">{app.description}</p>
+        <p className="text-sm mb-1">📱 النظام: {app.platform}</p>
+        <p className="text-sm mb-1 text-gray-400">معرّف الحزمة: <code>{app.bundleId}</code></p>
+        <a
+          href={app.downloadLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded font-bold"
         >
           تحميل التطبيق
-        </Link>
+        </a>
       </div>
     </div>
   );
-}
+};
 
 export default AppPreview;
