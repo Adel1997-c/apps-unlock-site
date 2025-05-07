@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useParams, useNavigate } from "react-router-dom";
+import BackButton from "../components/BackButton";
+
+<BackButton />
 
 const AppPreview = () => {
   const { id } = useParams(); // appId

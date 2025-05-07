@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import BackButton from "../components/BackButton";
+
+<BackButton />
 
 const AppsPage = () => {
   const [apps, setApps] = useState([]);

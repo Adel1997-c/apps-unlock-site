@@ -1,67 +1,40 @@
 import React, { useState } from "react";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { useNavigate } from "react-router-dom";
 
 const UnlockPage = () => {
   const [code, setCode] = useState("");
-  const [status, setStatus] = useState("");
-  const [downloadUrl, setDownloadUrl] = useState("");
+  const navigate = useNavigate();
 
-  const handleCheckCode = async () => {
-    setStatus("");
-    if (!code.trim()) {
-      setStatus("❌ الرجاء إدخال كود.");
-      return;
-    }
-
-    const codeRef = doc(db, "unlockCodes", code.toUpperCase());
-    const docSnap = await getDoc(codeRef);
-
-    if (!docSnap.exists()) {
-      setStatus("❌ الكود غير صحيح.");
-      return;
-    }
-
-    const data = docSnap.data();
-    if (data.used) {
-      setStatus("⚠️ هذا الكود تم استخدامه بالفعل.");
-      return;
-    }
-
-    // Mark the code as used
-    await updateDoc(codeRef, { used: true });
-
-    // Allow download
-    setStatus("✅ الكود صحيح. يمكنك الآن تحميل التطبيق.");
-    setDownloadUrl("/your-app-download.apk"); // ← change this URL
+  const handleVerify = () => {
+    // handle code logic here
+    alert("تم التحقق من الكود: " + code);
   };
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gray-100 p-6 text-right">
-      <h2 className="text-2xl font-bold mb-4">أدخل كود التحميل</h2>
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4">
+      <h1 className="text-3xl font-bold mb-6">إدخال كود التفعيل</h1>
+
       <input
         type="text"
-        value={code}
-        onChange={(e) => setCode(e.target.value.toUpperCase())}
         placeholder="مثال: 6JK7P2"
-        className="w-full border p-3 rounded mb-4"
+        className="w-80 sm:w-96 px-4 py-2 mb-4 text-black rounded"
+        value={code}
+        onChange={(e) => setCode(e.target.value)}
       />
+
       <button
-        onClick={handleCheckCode}
-        className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition"
+        onClick={handleVerify}
+        className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded mb-6 w-80 sm:w-96"
       >
         تحقق من الكود
       </button>
-      {status && <p className="mt-4 text-lg font-bold">{status}</p>}
-      {downloadUrl && (
-        <a
-          href={downloadUrl}
-          download
-          className="block mt-6 text-center bg-green-600 text-white py-3 rounded hover:bg-green-700"
-        >
-          تحميل التطبيق الآن
-        </a>
-      )}
+
+      <button
+        onClick={() => navigate("/")}
+        className="text-purple-400 hover:underline mt-4"
+      >
+        ⬅️ الرجوع إلى الصفحة الرئيسية
+      </button>
     </div>
   );
 };

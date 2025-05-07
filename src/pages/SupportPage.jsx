@@ -1,4 +1,7 @@
 import React from "react";
+import BackButton from "../components/BackButton";
+
+<BackButton />
 
 const SupportPage = () => {
   return (

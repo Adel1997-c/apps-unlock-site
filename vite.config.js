@@ -1,19 +1,6 @@
-{
-    "name": "apps-unlock-site",
-        "version": "1.0.0",
-            "private": true,
-                "scripts": {
-        "dev": "vite",
-            "build": "vite build",
-                "preview": "vite preview"
-    },
-    "dependencies": {
-        "react": "^18.2.0",
-            "react-dom": "^18.2.0",
-                "react-router-dom": "^6.21.2"
-    },
-    "devDependencies": {
-        "@vitejs/plugin-react": "^4.0.3",
-            "vite": "^5.4.19"
-    }
-}
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+});
