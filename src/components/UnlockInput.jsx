@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { db } from "../firebase";
 import {
-  
-<BackButton />
   collection,
   query,
   where,
@@ -12,6 +10,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import BackButton from "../components/BackButton"; // make sure this component exists
 
 const UnlockInput = () => {
   const [codeInput, setCodeInput] = useState("");
@@ -55,7 +54,6 @@ const UnlockInput = () => {
         return;
       }
 
-      const appData = appSnap.data();
       await updateDoc(codeDoc.ref, { used: true });
       navigate(`/preview/${codeData.appId}`);
     } catch (err) {
@@ -68,6 +66,8 @@ const UnlockInput = () => {
 
   return (
     <div dir="rtl" className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4">
+      <BackButton />
+
       <h1 className="text-3xl font-bold mb-6 text-purple-400">فتح التطبيق</h1>
 
       <form

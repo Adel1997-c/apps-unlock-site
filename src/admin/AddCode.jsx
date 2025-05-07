@@ -1,112 +1,66 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { db } from "../firebase";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  serverTimestamp,
-} from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
+import BackButton from "../components/BackButton";
 
 const AddCode = () => {
-  const [numberOfCodes, setNumberOfCodes] = useState(5);
   const [appId, setAppId] = useState("");
-  const [apps, setApps] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [amount, setAmount] = useState(1);
+  const [done, setDone] = useState(false);
 
-  useEffect(() => {
-    const fetchApps = async () => {
-      const querySnapshot = await getDocs(collection(db, "apps"));
-      const appsData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setApps(appsData);
-    };
-
-    fetchApps();
-  }, []);
-
-  const generateRandomCode = () => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const generateCode = () => {
+    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let code = "";
     for (let i = 0; i < 8; i++) {
-      code += chars.charAt(Math.floor(Math.random() * chars.length));
+      code += charset.charAt(Math.floor(Math.random() * charset.length));
     }
     return code;
   };
 
-  const handleGenerateCodes = async (e) => {
+  const handleGenerate = async (e) => {
     e.preventDefault();
-    if (!appId) return alert("Please select an app.");
+    setDone(false);
 
-    setLoading(true);
-
-    try {
-      const batch = Array.from({ length: numberOfCodes }, () => ({
-        code: generateRandomCode(),
-        appId,
+    const codesRef = collection(db, "codes");
+    for (let i = 0; i < amount; i++) {
+      await addDoc(codesRef, {
+        code: generateCode(),
         used: false,
-        createdAt: serverTimestamp(),
-      }));
-
-      for (const data of batch) {
-        await addDoc(collection(db, "codes"), data);
-      }
-
-      alert("✅ Codes generated and assigned!");
-      setNumberOfCodes(5);
-      setAppId("");
-    } catch (error) {
-      console.error("Error generating codes:", error);
-      alert("❌ Failed to generate codes.");
-    } finally {
-      setLoading(false);
+        appId: appId,
+        createdAt: Date.now(),
+      });
     }
+    setDone(true);
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-4">
-      <h2 className="text-2xl font-bold mb-4 text-purple-400">
-        Generate Unlock Codes
-      </h2>
-
-      <form
-        onSubmit={handleGenerateCodes}
-        className="space-y-4 max-w-xl bg-gray-900 p-6 rounded-lg shadow-lg"
-      >
-        <label className="block text-sm">Select App:</label>
-        <select
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4">
+      <BackButton />
+      <h2 className="text-2xl font-bold mb-4">توليد أكواد جديدة</h2>
+      <form onSubmit={handleGenerate} className="space-y-4 w-full max-w-sm">
+        <input
+          type="text"
+          placeholder="معرّف التطبيق"
           value={appId}
           onChange={(e) => setAppId(e.target.value)}
-          className="w-full p-2 rounded bg-gray-800"
           required
-        >
-          <option value="">-- Choose App --</option>
-          {apps.map((app) => (
-            <option key={app.id} value={app.id}>
-              {app.appName}
-            </option>
-          ))}
-        </select>
-
-        <label className="block text-sm">Number of Codes:</label>
+          className="w-full p-3 rounded bg-gray-800"
+        />
         <input
           type="number"
-          value={numberOfCodes}
+          placeholder="عدد الأكواد"
+          value={amount}
+          onChange={(e) => setAmount(Number(e.target.value))}
           min={1}
-          max={100}
-          onChange={(e) => setNumberOfCodes(e.target.value)}
-          className="w-full p-2 rounded bg-gray-800"
-          required
+          className="w-full p-3 rounded bg-gray-800"
         />
-
         <button
           type="submit"
-          disabled={loading}
-          className="w-full bg-purple-600 hover:bg-purple-700 p-2 rounded font-bold"
+          className="w-full bg-purple-600 hover:bg-purple-700 p-3 rounded"
         >
-          {loading ? "Generating..." : "Generate Codes"}
+          توليد
         </button>
+        {done && <p className="text-green-400 text-sm text-center">✅ تم توليد الأكواد بنجاح!</p>}
       </form>
     </div>
   );

@@ -1,57 +1,77 @@
+// src/App.jsx
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import UserDashboard from "./pages/UserDashboard";
-import HomePage from "./pages/HomePage";
-import BuyCode from "./pages/BuyCode";
-import AboutPage from "./pages/AboutPage";
-import SupportPage from "./pages/SupportPage";
-import NotFound from "./pages/NotFound";
-import AppPreview from "./pages/AppPreview";
-import AppsPage from "./pages/AppsPage";
-import UnlockPage from "./pages/UnlockPage";
 import LandingPage from "./pages/LandingPage";
-
-import AdminDashboard from "./admin/AdminDashboard";
-import AddApp from "./admin/AddApp";
+import UnlockPage from "./pages/UnlockPage";
+import AppsPage from "./pages/AppsPage";
+import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/LoginPage";
+import AdminDashboard from "./pages/AdminDashboard";
+import UserDashboard from "./pages/UserDashboard";
+import NotFound from "./pages/NotFoundPage";
+import AppPreview from "./pages/AppPreview";
+import ViewCodes from "./admin/ViewCodes";
 import AddCode from "./admin/AddCode";
 import ViewApps from "./admin/ViewApps";
-import ViewCodes from "./admin/ViewCodes";
+import Header from "./components/Header";
+import AdminRoute from "./routes/AdminRoute";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
-const App = () => {
+function App() {
   return (
     <Router>
       <Header />
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/buy" element={<BuyCode />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/support" element={<SupportPage />} />
-        <Route path="/preview" element={<AppPreview />} />
-        <Route path="/apps" element={<AppsPage />} />
         <Route path="/unlock" element={<UnlockPage />} />
+        <Route path="/apps" element={<AppsPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
-<Route path="/register" element={<RegisterPage />} />
-<Route path="/dashboard" element={<UserDashboard />} />
-
-        {/* Admin Routes */}
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/add-app" element={<AddApp />} />
-        <Route path="/admin/add-code" element={<AddCode />} />
-        <Route path="/admin/view-apps" element={<ViewApps />} />
-        <Route path="/admin/view-codes" element={<ViewCodes />} />
-
-        {/* 404 */}
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <UserDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/view-codes"
+          element={
+            <AdminRoute>
+              <ViewCodes />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/add-code"
+          element={
+            <AdminRoute>
+              <AddCode />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/view-apps"
+          element={
+            <AdminRoute>
+              <ViewApps />
+            </AdminRoute>
+          }
+        />
+        <Route path="/preview/:id" element={<AppPreview />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Footer />
     </Router>
   );
-};
+}
 
 export default App;
